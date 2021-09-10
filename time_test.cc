@@ -8,11 +8,10 @@ TEST_CASE ("Constructors and getters")
    SECTION("Default")
    {
       Time empty{};
-      CHECK( empty.get_hour()   == 0 );
+      REQUIRE( empty.get_hour()   == 0 );
       CHECK( empty.get_minute() == 0 );
       CHECK( empty.get_second() == 0 );
    }
-/* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
 
    SECTION("Integer")
    {
@@ -34,7 +33,7 @@ TEST_CASE ("Constructors and getters")
       CHECK( t2.get_minute() == 59 );
       CHECK( t2.get_second() == 59 );
    }
-*/
+
 /* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
 
    SECTION("String")
