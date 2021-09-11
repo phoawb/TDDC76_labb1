@@ -6,7 +6,8 @@ class Time
 {
 public:
     Time(); 
-    Time(int hour, int minute, int second);
+    Time(int h, int m, int s);
+    void assignTime(int h, int m, int s);
     int get_hour();
     int get_minute();
     int get_second();
