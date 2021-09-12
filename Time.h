@@ -8,7 +8,8 @@ public:
     Time(); 
     Time(int h, int m, int s);
     Time(std::string time);
-    void assignTime(int h, int m, int s);
+    void assignTime(int h, int m, int s); // Hur kan jag göra denna privat? 
+    void checkIllegalString(std::string time);
     int get_hour();
     int get_minute();
     int get_second();
