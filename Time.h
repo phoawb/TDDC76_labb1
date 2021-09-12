@@ -7,6 +7,7 @@ class Time
 public:
     Time(); 
     Time(int h, int m, int s);
+    Time(std::string time);
     void assignTime(int h, int m, int s);
     int get_hour();
     int get_minute();

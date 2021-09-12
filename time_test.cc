@@ -34,7 +34,6 @@ TEST_CASE ("Constructors and getters")
       CHECK( t2.get_second() == 59 );
    }
 
-/* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
 
    SECTION("String")
    {
@@ -56,7 +55,6 @@ TEST_CASE ("Constructors and getters")
       CHECK( t2.get_minute() == 59 );
       CHECK( t2.get_second() == 59 );  
    }
-*/
 }
 /* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
 TEST_CASE ("is_am") 
