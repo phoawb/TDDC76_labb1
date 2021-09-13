@@ -61,17 +61,19 @@ TEST_CASE ("Constructors and getters")
       CHECK( t2.get_second() == 59 );  
    }
 }
-/* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
+
 TEST_CASE ("is_am") 
 {
    Time t0{"05:00:00"};
    Time t1{"14:00:00"};
+   Time t2{"00:00:00"};
+   Time t3{"12:00:00"};
    CHECK       ( t0.is_am() );
    CHECK_FALSE ( t1.is_am() );
-   // Fill with extra corner cases!
+   CHECK       (t2.is_am() );
+   CHECK_FALSE (t3.is_am() );
+   // Fill with extra corner cases! ¯\_(ツ)_/¯
 }
-*/
-/* ----- REMOVE THIS COMMENT WHEN PREVIOUS TEST PASSES -----
 
 TEST_CASE ("to_string")
 {
@@ -88,6 +90,7 @@ TEST_CASE ("to_string")
    
    SECTION("24 hour format with argument")
    {
+      //CHECK ()
       // Fill with more tests!
    } 
 
@@ -99,4 +102,3 @@ TEST_CASE ("to_string")
 
 // Fill with more tests of other functions and operators!
 
-*/

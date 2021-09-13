@@ -1,9 +1,9 @@
-#include "Time.h"
-//#include <iostream>
-/*#include <string>
+//#include "Time.h"
+#include <iostream>
+#include <string>
 #include <algorithm>
-#include <cctype>*/
-using namespace std;
+#include <cctype>
+
 
 /*bool is_digits(std::string str)
 {
@@ -11,9 +11,15 @@ using namespace std;
 }*/
 
 int main()
-{   //string clock{"14:45:34e"};
+{   std::string time_str{};
+    int hour{11};
+    int minute{34};
+    time_str = std::to_string(hour - 1) + ":" + std::to_string(minute);
+    std::cout << time_str << std::endl;
+
+    //string clock{"14:45:34e"};
     //cout << clock.length();
-    Time test{"14:35:34"};
+    //Time test{"14:35:34"};
     /*Time empty{};
     if (empty.get_hour() == 5)
     {

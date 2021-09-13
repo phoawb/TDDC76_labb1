@@ -59,6 +59,7 @@ void Time::assignTime(int h, int m, int s)
     second = s;
 }
 
+// Ta in en sträng och kasta om den inte är på det exakta formatet "hh:mm:ss"
 void Time::checkIllegalString(std::string time)
 {   
     if (time.length() != 8) // kasta strängen om den inte är rätt längd
@@ -92,3 +93,79 @@ void Time::checkIllegalString(std::string time)
         throw;
     }
 }
+
+bool Time::is_am()
+{   bool am_check{};
+    if (hour < 12)
+    {
+        am_check = 1;
+    }else
+    {
+        am_check = 0;
+    }
+    return am_check;
+}
+
+// ta in en bool och returnera en formaterad string på 12h- eller 24h-format
+std::string Time::to_string (bool const twelveh_format)
+{
+    std::string time_str{};
+    if (twelveh_format) // formatera 12h-formatet
+    {
+        if (hour < 12)
+        {
+            if (hour == 0)
+            {
+                time_str = formatString(hour + 12, minute, second) + "am";
+            }else
+            {
+                time_str = formatString(hour, minute, second) + "am";
+            }
+        }else
+        {
+            if (hour == 12)
+            {
+                time_str = formatString(hour, minute, second) + "pm";
+            }else
+            {
+                time_str = formatString(hour - 12, minute, second) + "pm";
+            }
+        }
+    }else // formatera 24h-formatet 
+    {
+        time_str = formatString(hour, minute, second);
+    }
+    return time_str;
+}
+
+std::string Time::formatString(int h, int m, int s)
+{
+    std::string hour_str{};
+    std::string minute_str{};
+    std::string second_str{};
+    if (h < 10)
+    {
+        hour_str = "0" + std::to_string(h);
+    }else
+    {
+        hour_str = std::to_string(h);
+    }
+    if (m < 10)
+    {
+        minute_str = "0" + std::to_string(m);
+    }else
+    {
+        minute_str = std::to_string(m);
+    }
+    if (s < 10)
+    {
+        second_str = "0" + std::to_string(s);
+    }else
+    {
+        second_str = std::to_string(s);
+    }
+    return hour_str + ":" + minute_str + ":" + second_str;
+}
+
+
+    
