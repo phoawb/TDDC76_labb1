@@ -44,7 +44,7 @@ TEST_CASE ("Constructors and getters")
       CHECK_THROWS( Time{"13:35:60"} );
       CHECK_THROWS( Time{"13:60:35"} );
       CHECK_THROWS( Time{"24:35:35"} );
-      //CHECK_THROWS( Time{"2e:35:35"} );
+      CHECK_THROWS( Time{"2e:35:35"} );
       //CHECK_THROWS( Time{"23-35:35"} );
       /*CHECK_THROWS( Time{"23:3e:35"} );
       CHECK_THROWS( Time{"23:35-35"} );

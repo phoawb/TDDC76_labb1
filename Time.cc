@@ -72,14 +72,14 @@ void Time::checkIllegalString(std::string time)
     std::string colon_str2{time.substr(5,1)};
     std::string second_str{time.substr(6,2)};
     
-    bool hour_check{std::all_of(hour_str.begin(), hour_str.end(), ::isdigit)}; // Gör checkar för varje del av strängen
+    // bool hour_check{std::all_of(time.begin(), time.end() - 6, ::isdigit)}; // Gör checkar för varje del av strängen
     bool minute_check{std::all_of(hour_str.begin(), hour_str.end(), ::isdigit)};
     bool second_check{std::all_of(hour_str.begin(), hour_str.end(), ::isdigit)};
     std::string colon{":"};
     bool colon_check1{colon.find(colon_str1) != std::string::npos};
     bool colon_check2{colon.find(colon_str2) != std::string::npos};
 
-    if (!hour_check)
+    if (!std::all_of(time.begin(), time.end() - 6, ::isdigit))
     {
         throw hour_str;
     } else if (!minute_check)
