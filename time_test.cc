@@ -45,10 +45,11 @@ TEST_CASE ("Constructors and getters")
       CHECK_THROWS( Time{"13:60:35"} );
       CHECK_THROWS( Time{"24:35:35"} );
       CHECK_THROWS( Time{"2e:35:35"} );
-      //CHECK_THROWS( Time{"23-35:35"} );
-      /*CHECK_THROWS( Time{"23:3e:35"} );
+      CHECK_THROWS( Time{"23-35:35"} );
+      CHECK_THROWS( Time{"23:3e:35"} );
       CHECK_THROWS( Time{"23:35-35"} );
-      CHECK_THROWS( Time{"23:35:3e"} );*/
+      CHECK_THROWS( Time{"23:35:3e"} );
+      CHECK_THROWS( Time{"23:59:59e"});
 
       CHECK( t0.get_hour()   == 0 );
       CHECK( t0.get_minute() == 0 );
@@ -85,20 +86,44 @@ TEST_CASE ("to_string")
    SECTION("24 hour format no argument")
    {
       CHECK( t0.to_string() == "00:00:00" );
-      // Fill with more tests!
+      CHECK_FALSE(t0.to_string() != "00:00:00");
    }
    
    SECTION("24 hour format with argument")
    {
-      //CHECK ()
-      // Fill with more tests!
+      CHECK (t1.to_string() == "11:59:59" );
+      CHECK (t2.to_string() == "12:00:00");
+      CHECK (t3.to_string() == "13:00:00");
+      CHECK (t4.to_string() == "23:59:59");
    } 
 
    SECTION("12 hour format")
    {
-      // Fill with more tests!
+      CHECK (t0.to_string(1) == "12:00:00am");
+      CHECK (t1.to_string(1) == "11:59:59am");
+      CHECK (t2.to_string(1) == "12:00:00pm");
+      CHECK (t3.to_string(1) == "01:00:00pm");
+      CHECK (t4.to_string(1) == "11:59:59pm");
    }
 }
 
 // Fill with more tests of other functions and operators!
-
+TEST_CASE("addition operators")
+{
+   SECTION("obj + int")
+   {
+      Time t0{"00:00:00"};
+      Time t1 = t0 + 1;
+      Time t2 = t0 + (-1);
+      Time t3 = t0 + 60;
+      Time t4 = t0 + (-60);
+      Time t5 = t0 + 90000;
+      Time t6 = t0 + (-90000);
+      CHECK (t1.to_string() == "00:00:01" );
+      CHECK (t2.to_string() == "23:59:59" );
+      CHECK (t3.to_string() == "00:01:00");
+      CHECK (t4.to_string() == "23:59:00");
+      CHECK (t5.to_string() == "01:00:00");
+      CHECK (t6.to_string() == "23:00:00");
+   }
+}

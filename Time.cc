@@ -3,17 +3,23 @@
 #include <iostream>
 #include <algorithm>
 #include <cctype>
+#include <sstream>
+#include <iomanip>
+#include <stdexcept>
 
+// Assigna 0 till alla tider i klassen
 Time::Time()
 : hour{0}, minute{0}, second{0}
 {   
-};
+}
 
+// Ta in tre integers och lägg till de till klassen om de är inom tillåtet spann för tid
 Time::Time(int h, int m, int s)
 {
     Time::assignTime(h, m, s);
 }
 
+// Ta in en sträng och omvandla den till integers för klassen om den är på rätt format (hh:mm:ss)
 Time::Time(std::string time)
 {   
     checkIllegalString(time);
@@ -26,17 +32,17 @@ Time::Time(std::string time)
     assignTime(h, m, s);
 }
 
-int Time::get_hour()
+int Time::get_hour() const
 {
     return hour;
 }
 
-int Time::get_minute()
+int Time::get_minute() const
 {
     return minute;
 }
 
-int Time::get_second()
+int Time::get_second() const
 {
     return second;
 }
@@ -46,13 +52,13 @@ void Time::assignTime(int h, int m, int s)
 {
     if (h < 0 || h > 23)
     {
-        throw h;
+        throw std::logic_error("Timmar måste vara mellan 0-23!");
     } else if (m < 0 || m > 59)
     {
-        throw m;
+        throw std::logic_error("Minuter måste vara mellan 0-59!");
     } else if (s < 0 || s > 59)
     {
-        throw s;
+        throw std::logic_error("Sekunder måste vara mellan 0-59!");
     }
     hour = h; 
     minute = m;
@@ -64,7 +70,7 @@ void Time::checkIllegalString(std::string time)
 {   
     if (time.length() != 8) // kasta strängen om den inte är rätt längd
     {
-        throw time;
+        throw std::logic_error("Tiden måste anges på formatet hh:mm:ss");
     }
     std::string hour_str{time.substr(0,2)}; // dela upp strängen i sifferdelar och kolon
     std::string colon_str1{time.substr(2,1)};
@@ -72,28 +78,29 @@ void Time::checkIllegalString(std::string time)
     std::string colon_str2{time.substr(5,1)};
     std::string second_str{time.substr(6,2)};
     
-    // bool hour_check{std::all_of(time.begin(), time.end() - 6, ::isdigit)}; // Gör checkar för varje del av strängen
-    bool minute_check{std::all_of(hour_str.begin(), hour_str.end(), ::isdigit)};
-    bool second_check{std::all_of(hour_str.begin(), hour_str.end(), ::isdigit)};
-    std::string colon{":"};
+    bool hour_check{std::all_of(time.begin(), time.end() - 6, ::isdigit)}; // Kolla om varje visare bara innehåller siffor
+    bool minute_check{std::all_of(time.begin() + 3, time.end() - 3, ::isdigit)};
+    bool second_check{std::all_of(time.begin() + 6, time.end(), ::isdigit)};
+    std::string colon{":"}; // Kolla om det är kolon mellan visarna
     bool colon_check1{colon.find(colon_str1) != std::string::npos};
     bool colon_check2{colon.find(colon_str2) != std::string::npos};
 
-    if (!std::all_of(time.begin(), time.end() - 6, ::isdigit))
+    if (!hour_check) // kasta om tiden var felaktigt angiven
     {
-        throw hour_str;
+        throw std::logic_error("Timvisaren får bara innehålla siffor!");
     } else if (!minute_check)
     {
-        throw minute_str;
+        throw std::logic_error("Minutvisaren får bara innehålla siffor!");
     } else if (!second_check)
     {
-        throw second_str;
+        throw std::logic_error("Sekundvisaren får bara innehålla siffor!");
     } else if (!colon_check1 || !colon_check2)
     {
-        throw;
+        throw std::logic_error("Det måste vara kolon mellan tiderna!");
     }
 }
 
+// returnera true om hour < 12 (det är förmiddag)
 bool Time::is_am()
 {   bool am_check{};
     if (hour < 12)
@@ -107,10 +114,10 @@ bool Time::is_am()
 }
 
 // ta in en bool och returnera en formaterad string på 12h- eller 24h-format
-std::string Time::to_string (bool const twelveh_format)
+std::string Time::to_string (bool const twelve_format)
 {
     std::string time_str{};
-    if (twelveh_format) // formatera 12h-formatet
+    if (twelve_format) // formatera 12h-formatet
     {
         if (hour < 12)
         {
@@ -138,34 +145,114 @@ std::string Time::to_string (bool const twelveh_format)
     return time_str;
 }
 
+// Ta in tre integers (h, m, s) och returnera en sträng på hh:mm:ss format 
 std::string Time::formatString(int h, int m, int s)
 {
-    std::string hour_str{};
-    std::string minute_str{};
-    std::string second_str{};
-    if (h < 10)
+    std::string time_string{};
+    std::stringstream ss;
+    ss << std::setw(2) << std::setfill('0') << h;
+    ss << ":";
+    ss << std::setw(2) << std::setfill('0') << m;
+    ss << ":";
+    ss << std::setw(2) << std::setfill('0') << s;
+    ss >> time_string;
+    return time_string;
+}
+
+// Addition med annat tidsobjekt: addera tiderna varförsig och returnera ett nytt tidsobjekt
+/*Time Time::operator+(Time & rhs)
+{
+    int second2 = second + rhs.get_second(); // Addera tiderna för sig och för över till nästa tid vid overflow 
+    int minute2 = minute + rhs.get_minute() + second2/60;
+    int hour2 = hour + rhs.get_hour() + minute2/60;
+    
+    second2 = second2 % 60; // Få tillbaka tiderna till växling vid 60, resp 24
+    minute2 = minute2 % 60;
+    hour2 = hour2 % 24;
+
+    Time time2{hour2, minute2, second2};
+    return time2;
+}*/
+
+// Addera med en integer på höger sida och returnera ett nytt tidsobjekt med adderade tider
+Time Time::operator+(int const rhs)
+{
+    int second2{0};
+    int minute2{0};
+    int hour2{0};
+
+    int total_time = hour*3600 + minute*60 + second + rhs; // Lägg allting till sekunder efter midnatt
+    if (total_time >= 0) // om positivt omvandla till respektive tid och kör relevant modulo
     {
-        hour_str = "0" + std::to_string(h);
-    }else
+        second2 = total_time % 60;
+        minute2 = (total_time/60) % 60;
+        hour2 = (total_time/3600) % 24;
+    } else // om negativt, gör först om till positiva sekunder efter midnatt
     {
-        hour_str = std::to_string(h);
+        total_time = 86400 + (total_time % 86400);
+        second2 = total_time % 60;
+        minute2 = (total_time/60) % 60;
+        hour2 = (total_time/3600) % 24;
     }
-    if (m < 10)
+
+    Time time2{hour2, minute2, second2};
+    return time2;
+}
+
+// Addera med en integer på vänster sida och returnera ett nytt tidsobjekt med adderade tider
+Time Time::operator+(int lhs, Time & rhs)
+{
+    int second2{0};
+    int minute2{0};
+    int hour2{0};
+
+    int total_time = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second() + lhs; // Lägg allting till sekunder efter midnatt
+    if (total_time >= 0) // om positivt omvandla till respektive tid och kör relevant modulo
     {
-        minute_str = "0" + std::to_string(m);
-    }else
+        second2 = total_time % 60;
+        minute2 = (total_time/60) % 60;
+        hour2 = (total_time/3600) % 24;
+    } else // om negativt, gör först om till positiva sekunder efter midnatt
     {
-        minute_str = std::to_string(m);
+        total_time = 86400 + (total_time % 86400);
+        second2 = total_time % 60;
+        minute2 = (total_time/60) % 60;
+        hour2 = (total_time/3600) % 24;
     }
-    if (s < 10)
+
+    Time time2{hour2, minute2, second2};
+    return time2;
+}
+
+Time Time::operator-(int rhs)
+{
+    int second2{0};
+    int minute2{0};
+    int hour2{0};
+
+    int total_time = hour*3600 + minute*60 + second - rhs; // Lägg allting till sekunder efter midnatt
+    if (total_time >= 0) // om positivt omvandla till respektive tid och kör relevant modulo
     {
-        second_str = "0" + std::to_string(s);
-    }else
+        second2 = total_time % 60;
+        minute2 = (total_time/60) % 60;
+        hour2 = (total_time/3600) % 24;
+    } else // om negativt, gör först om till positiva sekunder efter midnatt
     {
-        second_str = std::to_string(s);
+        total_time = 86400 + (total_time % 86400);
+        second2 = total_time % 60;
+        minute2 = (total_time/60) % 60;
+        hour2 = (total_time/3600) % 24;
     }
-    return hour_str + ":" + minute_str + ":" + second_str;
+
+    Time time2{hour2, minute2, second2};
+    return time2;
 }
 
 
+
+//Addera med ett heltal N i sekunder (både positivt och negativt)
+/*[returtyp] klass::operator[symbol](right operand) {
+   //Instruktioner
+   [retursats];
+ }*/
     

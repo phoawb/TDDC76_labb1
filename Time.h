@@ -9,18 +9,24 @@ public:
     Time(int h, int m, int s);
     Time(std::string time);
     bool is_am();
-    std::string to_string (bool const twelveh_format = 0);
-    int get_hour();
-    int get_minute();
-    int get_second();
+    std::string to_string (bool const twelve_format = 0);
+    int get_hour() const;
+    int get_minute() const;
+    int get_second() const;
+    //Time operator + (Time & rhs);
+    Time operator + (int const rhs);
+    Time operator + (int lhs, Time const & rhs);
+    Time operator - (int rhs);
+
+
 
 private:
     int hour{};
     int minute{};
     int second{};
-    void assignTime(int h, int m, int s); // Hur kan jag göra denna privat? 
-    void checkIllegalString(std::string time); // --||--
-    std::string formatString(int h, int m, int s); // --||--
+    void assignTime(int h, int m, int s);
+    void checkIllegalString(std::string time); 
+    std::string formatString(int h, int m, int s); 
 };
 
 #endif

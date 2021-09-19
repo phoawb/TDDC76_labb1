@@ -1,4 +1,4 @@
-//#include "Time.h"
+#include "Time.h"
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -11,11 +11,15 @@
 }*/
 
 int main()
-{   std::string time_str{};
+{   
+    Time time{1,2,3};
+    Time t0 = 3 + time;
+    std::cout << t0.get_second() << std::endl;
+    /*std::string time_str{};
     int hour{11};
     int minute{34};
     time_str = std::to_string(hour - 1) + ":" + std::to_string(minute);
-    std::cout << time_str << std::endl;
+    std::cout << time_str << std::endl;*/
 
     //string clock{"14:45:34e"};
     //cout << clock.length();
