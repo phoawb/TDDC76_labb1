@@ -243,9 +243,75 @@ Time Time::operator-(int rhs)
     return time2;
 }
 
-Time Time::operator++
+Time operator-(int lhs, Time const & rhs)
+{
+    int second2{0};
+    int minute2{0};
+    int hour2{0};
 
+    int total_time = lhs - rhs.get_hour()*3600 - rhs.get_minute()*60 - rhs.get_second(); // Lägg allting till sekunder efter midnatt
+    if (total_time < 0) // om negativt, gör först om till positiva sekunder efter midnatt 
+    {
+        total_time = 86400 + (total_time % 86400);
+        second2 = total_time % 60;
+        minute2 = (total_time/60) % 60;
+        hour2 = (total_time/3600) % 24;
+    } else // om positivt omvandla till respektive tid och kör relevant modulo
+    {
+        second2 = total_time % 60;
+        minute2 = (total_time/60) % 60;
+        hour2 = (total_time/3600) % 24;
+    }
 
+    Time time2{hour2, minute2, second2};
+    return time2;
+}
+
+Time& Time::operator++()
+{   
+    ++second;
+    minute = minute + second/60;
+    hour = hour + minute/60;
+    second = second % 60;
+    minute = minute % 60;
+    hour = hour % 24;
+
+    return *this;
+}
+
+Time Time::operator++(int)
+{
+    const Time old = *this;
+    ++(*this);
+    return old;
+}
+
+Time& Time::operator--()
+{   
+    --second;
+    int total_time = hour*3600 + minute*60 + second; // Lägg allting till sekunder efter midnatt
+    if (total_time >= 0) // om positivt omvandla till respektive tid och kör relevant modulo
+    {
+        second = total_time % 60;
+        minute = (total_time/60) % 60;
+        hour = (total_time/3600) % 24;
+    } else // om negativt, gör först om till positiva sekunder efter midnatt
+    {
+        total_time = 86400 + (total_time % 86400);
+        second = total_time % 60;
+        minute = (total_time/60) % 60;
+        hour = (total_time/3600) % 24;
+    }
+
+    return *this;
+}
+
+Time Time::operator--(int)
+{
+    Time old = *this;
+    --(*this);
+    return old;
+}
 
 //Addera med ett heltal N i sekunder (både positivt och negativt)
 /*[returtyp] klass::operator[symbol](right operand) {

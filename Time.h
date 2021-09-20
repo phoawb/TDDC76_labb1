@@ -16,8 +16,10 @@ public:
     //Time operator + (Time & rhs);
     Time operator + (int const rhs);
     Time operator - (int rhs);
-    Time operator ++ ();
-
+    Time& operator ++ ();
+    Time operator ++ (int);
+    Time& operator -- ();
+    Time operator -- (int);
 
 
 private:
@@ -30,5 +32,6 @@ private:
 };
 
 Time operator + (int lhs, Time const & rhs);
+Time operator - (int lhs, Time const & rhs);
 
 #endif

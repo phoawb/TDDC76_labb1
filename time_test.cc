@@ -165,6 +165,63 @@ TEST_CASE("Subtraction operators")
 
    SECTION("int - obj ")
    {
-      
+      Time t0{"12:00:00"};
+      Time t1 = 1  - t0; 
+      Time t2 = (-1)  - t0; 
+      Time t3 = 60  - t0; 
+      Time t4 = (-60)  - t0; 
+      Time t5 = 136400  - t0; 
+      Time t6 = (-90000)  - t0; 
+      CHECK (t1.to_string() == "12:00:01" );
+      CHECK (t2.to_string() == "11:59:59");
+      CHECK (t3.to_string() == "12:01:00");
+      CHECK (t4.to_string() == "11:59:00");
+      CHECK (t5.to_string() == "01:53:20");
+      CHECK (t6.to_string() == "11:00:00");
+   }
+}
+
+TEST_CASE("increment & decrement operators")
+{
+   SECTION("increment prefix")
+   {
+      Time t0{};
+      Time t1 = ++t0;
+      Time t2 = ++ ++t0;
+      Time t3{"23:59:59"};
+      ++t3;
+      CHECK(t0.to_string() == "00:00:03");
+      CHECK(t1.to_string() == "00:00:01");
+      CHECK(t2.to_string() == "00:00:03");
+      CHECK(t3.to_string() == "00:00:00");
+   }
+
+   SECTION("increment postfix")
+   {
+      Time t0{};
+      Time t1 = t0++;
+      Time t2{"23:59:59"};
+      t2++;
+      CHECK(t0.to_string() == "00:00:01");
+      CHECK(t1.to_string() == "00:00:00");
+      CHECK(t2.to_string() == "00:00:00");
+   }
+
+   SECTION("decrement prefix")
+   {
+      Time t0{};
+      Time t1 = --t0;
+      Time t2 = -- --t0;
+      CHECK(t0.to_string() == "23:59:57");
+      CHECK(t1.to_string() == "23:59:59");
+      CHECK(t2.to_string() == "23:59:57");
+   }
+
+   SECTION("decrement postfix")
+   {
+      Time t0{};
+      Time t1 = t0--;
+      CHECK(t0.to_string() == "23:59:59");
+      CHECK(t1.to_string() == "00:00:00");
    }
 }

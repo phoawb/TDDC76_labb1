@@ -12,9 +12,21 @@
 
 int main()
 {   
-    Time time{1,2,3};
-    Time t0 = 3 + time;
+    Time t0{};
+    Time t1 = t0++ ++;
     std::cout << t0.get_second() << std::endl;
+    std::cout << t1.get_second() << std::endl;
+    
+    
+    
+    
+    
+    
+    
+    
+    /*Time time{1,2,3};
+    Time t0 = 3 + time;
+    std::cout << t0.get_second() << std::endl;*/
     /*std::string time_str{};
     int hour{11};
     int minute{34};
