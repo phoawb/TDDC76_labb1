@@ -126,4 +126,45 @@ TEST_CASE("addition operators")
       CHECK (t5.to_string() == "01:00:00");
       CHECK (t6.to_string() == "23:00:00");
    }
+   SECTION("int + obj")
+   {
+      Time t0{"00:00:00"};
+      Time t1 = 1 + t0; 
+      Time t2 = (-1) + t0; 
+      Time t3 = 60 + t0; 
+      Time t4 = (-60) + t0; 
+      Time t5 = 90000 + t0; 
+      Time t6 = (-90000) + t0; 
+      CHECK (t1.to_string() == "00:00:01");
+      CHECK (t2.to_string() == "23:59:59");
+      CHECK (t3.to_string() == "00:01:00");
+      CHECK (t4.to_string() == "23:59:00");
+      CHECK (t5.to_string() == "01:00:00");
+      CHECK (t6.to_string() == "23:00:00");
+   }
+}
+
+TEST_CASE("Subtraction operators")
+{
+   SECTION("obj - int")
+   {
+      Time t0{"00:00:00"};
+      Time t1 = t0 - 1;
+      Time t2 = t0 - (-1);
+      Time t3 = t0 - 60;
+      Time t4 = t0 - (-60);
+      Time t5 = t0 - 90000;
+      Time t6 = t0 - (-90000);
+      CHECK (t1.to_string() == "23:59:59" );
+      CHECK (t2.to_string() == "00:00:01");
+      CHECK (t3.to_string() == "23:59:00");
+      CHECK (t4.to_string() == "00:01:00");
+      CHECK (t5.to_string() == "23:00:00");
+      CHECK (t6.to_string() == "01:00:00");
+   }
+
+   SECTION("int - obj ")
+   {
+      
+   }
 }

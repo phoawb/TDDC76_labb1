@@ -66,24 +66,19 @@ void Time::assignTime(int h, int m, int s)
 }
 
 // Ta in en sträng och kasta om den inte är på det exakta formatet "hh:mm:ss"
-void Time::checkIllegalString(std::string time)
+void Time::checkIllegalString(std::string time) const
 {   
     if (time.length() != 8) // kasta strängen om den inte är rätt längd
     {
         throw std::logic_error("Tiden måste anges på formatet hh:mm:ss");
     }
-    std::string hour_str{time.substr(0,2)}; // dela upp strängen i sifferdelar och kolon
-    std::string colon_str1{time.substr(2,1)};
-    std::string minute_str{time.substr(3,2)};
-    std::string colon_str2{time.substr(5,1)};
-    std::string second_str{time.substr(6,2)};
     
     bool hour_check{std::all_of(time.begin(), time.end() - 6, ::isdigit)}; // Kolla om varje visare bara innehåller siffor
     bool minute_check{std::all_of(time.begin() + 3, time.end() - 3, ::isdigit)};
     bool second_check{std::all_of(time.begin() + 6, time.end(), ::isdigit)};
     std::string colon{":"}; // Kolla om det är kolon mellan visarna
-    bool colon_check1{colon.find(colon_str1) != std::string::npos};
-    bool colon_check2{colon.find(colon_str2) != std::string::npos};
+    bool colon_check1{colon.find(time.substr(2,1)) != std::string::npos};
+    bool colon_check2{colon.find(time.substr(5,1)) != std::string::npos};
 
     if (!hour_check) // kasta om tiden var felaktigt angiven
     {
@@ -101,7 +96,7 @@ void Time::checkIllegalString(std::string time)
 }
 
 // returnera true om hour < 12 (det är förmiddag)
-bool Time::is_am()
+bool Time::is_am() const
 {   bool am_check{};
     if (hour < 12)
     {
@@ -114,7 +109,7 @@ bool Time::is_am()
 }
 
 // ta in en bool och returnera en formaterad string på 12h- eller 24h-format
-std::string Time::to_string (bool const twelve_format)
+std::string Time::to_string (bool const twelve_format) const
 {
     std::string time_str{};
     if (twelve_format) // formatera 12h-formatet
@@ -146,7 +141,7 @@ std::string Time::to_string (bool const twelve_format)
 }
 
 // Ta in tre integers (h, m, s) och returnera en sträng på hh:mm:ss format 
-std::string Time::formatString(int h, int m, int s)
+std::string Time::formatString(int h, int m, int s) const
 {
     std::string time_string{};
     std::stringstream ss;
@@ -200,7 +195,7 @@ Time Time::operator+(int const rhs)
 }
 
 // Addera med en integer på vänster sida och returnera ett nytt tidsobjekt med adderade tider
-Time Time::operator+(int lhs, Time & rhs)
+Time operator+(int lhs, Time const & rhs)
 {
     int second2{0};
     int minute2{0};
@@ -247,6 +242,8 @@ Time Time::operator-(int rhs)
     Time time2{hour2, minute2, second2};
     return time2;
 }
+
+Time Time::operator++
 
 
 
