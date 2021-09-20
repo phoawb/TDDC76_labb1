@@ -1,4 +1,5 @@
 #include "Time.h"
+#include "Time.h"
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -118,56 +119,41 @@ std::string Time::to_string (bool const twelve_format) const
         {
             if (hour == 0)
             {
-                time_str = formatString(hour + 12, minute, second) + "am";
+                time_str = formatString(hour + 12) + "am";
             }else
             {
-                time_str = formatString(hour, minute, second) + "am";
+                time_str = formatString(hour) + "am";
             }
         }else
         {
             if (hour == 12)
             {
-                time_str = formatString(hour, minute, second) + "pm";
+                time_str = formatString(hour) + "pm";
             }else
             {
-                time_str = formatString(hour - 12, minute, second) + "pm";
+                time_str = formatString(hour - 12) + "pm";
             }
         }
     }else // formatera 24h-formatet 
     {
-        time_str = formatString(hour, minute, second);
+        time_str = formatString(hour);
     }
     return time_str;
 }
 
 // Ta in tre integers (h, m, s) och returnera en sträng på hh:mm:ss format 
-std::string Time::formatString(int h, int m, int s) const
+std::string Time::formatString(int h) const
 {
     std::string time_string{};
     std::stringstream ss;
     ss << std::setw(2) << std::setfill('0') << h;
     ss << ":";
-    ss << std::setw(2) << std::setfill('0') << m;
+    ss << std::setw(2) << std::setfill('0') << minute;
     ss << ":";
-    ss << std::setw(2) << std::setfill('0') << s;
+    ss << std::setw(2) << std::setfill('0') << second;
     ss >> time_string;
     return time_string;
 }
-
-// Addition med annat tidsobjekt: addera tiderna varförsig och returnera ett nytt tidsobjekt
-/*Time Time::operator+(Time & rhs)
-{
-    int second2 = second + rhs.get_second(); // Addera tiderna för sig och för över till nästa tid vid overflow 
-    int minute2 = minute + rhs.get_minute() + second2/60;
-    int hour2 = hour + rhs.get_hour() + minute2/60;
-    
-    second2 = second2 % 60; // Få tillbaka tiderna till växling vid 60, resp 24
-    minute2 = minute2 % 60;
-    hour2 = hour2 % 24;
-
-    Time time2{hour2, minute2, second2};
-    return time2;
-}*/
 
 // Addera med en integer på höger sida och returnera ett nytt tidsobjekt med adderade tider
 Time Time::operator+(int const rhs)
@@ -313,9 +299,67 @@ Time Time::operator--(int)
     return old;
 }
 
-//Addera med ett heltal N i sekunder (både positivt och negativt)
-/*[returtyp] klass::operator[symbol](right operand) {
-   //Instruktioner
-   [retursats];
- }*/
+bool Time::operator<(Time const & rhs)
+{   
+    int time_lhs = hour*3600 + minute*60 + second;
+    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
+
+    return time_lhs < time_rhs;
+}
+
+bool Time::operator>(Time const & rhs)
+{
+    int time_lhs = hour*3600 + minute*60 + second;
+    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
+
+    return time_lhs > time_rhs;
+}
+
+bool Time::operator<=(Time const & rhs)
+{
+    int time_lhs = hour*3600 + minute*60 + second;
+    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
+
+    return time_lhs <= time_rhs;
+}
+
+bool Time::operator>=(Time const & rhs)
+{
+    int time_lhs = hour*3600 + minute*60 + second;
+    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
+
+    return time_lhs >= time_rhs;
+}
+
+bool Time::operator==(Time const & rhs)
+{
+    int time_lhs = hour*3600 + minute*60 + second;
+    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
+
+    return time_lhs == time_rhs;
+}
+
+bool Time::operator!=(Time const & rhs)
+{
+    int time_lhs = hour*3600 + minute*60 + second;
+    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
+
+    return time_lhs != time_rhs;
+}
+
+std::ostream& operator<<(std::ostream& os, Time const & time)
+{
+    os << time.to_string();
+    return os;
+}
+
+std::istream& operator>>(std::istream& is, Time & time) {
+int h{0};
+int m{0};
+int s{0};
+std::string time_str{};
+is >> h >> m >> s;
+time = Time{h,m,s};
+return is; 
+}
     

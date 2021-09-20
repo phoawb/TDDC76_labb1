@@ -1,7 +1,10 @@
 #include "catch.hpp"
 #include "Time.h"
+#include <iostream>
+#include <sstream>
+#include <string>
 
-using namespace std;
+//using namespace std;
 
 TEST_CASE ("Constructors and getters")
 {
@@ -119,8 +122,8 @@ TEST_CASE("addition operators")
       Time t4 = t0 + (-60);
       Time t5 = t0 + 90000;
       Time t6 = t0 + (-90000);
-      CHECK (t1.to_string() == "00:00:01" );
-      CHECK (t2.to_string() == "23:59:59" );
+      CHECK (t1.to_string() == "00:00:01");
+      CHECK (t2.to_string() == "23:59:59");
       CHECK (t3.to_string() == "00:01:00");
       CHECK (t4.to_string() == "23:59:00");
       CHECK (t5.to_string() == "01:00:00");
@@ -155,7 +158,7 @@ TEST_CASE("Subtraction operators")
       Time t4 = t0 - (-60);
       Time t5 = t0 - 90000;
       Time t6 = t0 - (-90000);
-      CHECK (t1.to_string() == "23:59:59" );
+      CHECK (t1.to_string() == "23:59:59");
       CHECK (t2.to_string() == "00:00:01");
       CHECK (t3.to_string() == "23:59:00");
       CHECK (t4.to_string() == "00:01:00");
@@ -223,5 +226,101 @@ TEST_CASE("increment & decrement operators")
       Time t1 = t0--;
       CHECK(t0.to_string() == "23:59:59");
       CHECK(t1.to_string() == "00:00:00");
+   }
+}
+
+TEST_CASE("comparison operators")
+{
+   SECTION("less than")
+   {
+      Time t0{};
+      Time t1{"12:00:00"};
+
+      CHECK((t0 < t1) == 1);
+      CHECK((t1 < t0) == 0);
+
+   }
+
+   SECTION("greater than")
+   {
+      Time t0{};
+      Time t1{"12:00:00"};
+
+      CHECK((t0 > t1) == 0);
+      CHECK((t1 > t0) == 1);
+   }
+
+   SECTION("less than or equal")
+   {
+      Time t0{};
+      Time t1{"12:00:00"};
+      Time t2{};
+
+      CHECK((t0 <= t1) == 1);
+      CHECK((t1 <= t0) == 0);
+      CHECK((t2 <= t0) == 1);
+   }
+
+   SECTION("greater than or equal")
+   {
+      Time t0{};
+      Time t1{"12:00:00"};
+      Time t2{};
+
+      CHECK((t0 >= t1) == 0);
+      CHECK((t1 >= t0) == 1);
+      CHECK((t2 >= t0) == 1);
+   }
+
+   SECTION("equal")
+   {
+      Time t0{};
+      Time t1{"12:00:00"};
+      Time t2{};
+
+      CHECK((t0 == t1) == 0);
+      CHECK((t0 == t2) == 1);
+   }
+
+   SECTION("not equal")
+   {
+      Time t0{};
+      Time t1{"12:00:00"};
+      Time t2{};
+
+      CHECK((t0 != t1) == 1);
+      CHECK((t0 != t2) == 0);
+   }
+}
+
+TEST_CASE("in- & utström")
+{
+   SECTION("utström")
+   {
+      Time t0{};
+      std::stringstream ss{};
+      std::string test_string{};
+      ss << t0;
+      ss >> test_string;
+      CHECK(test_string == "00:00:00");
+      
+   }
+
+   SECTION("inström")
+   {
+      std::istringstream istream0{"1 2 3"};
+      std::istringstream istream1{"24 2 3"};
+      std::istringstream istream2{"1 60 3"};
+      std::istringstream istream3{"1 2 60"};
+      Time t0{};
+      Time t1{};
+      Time t2{};
+      Time t3{};
+      istream0 >> t0;
+      CHECK(t0.to_string() == "01:02:03");
+      CHECK_THROWS(istream1 >> t1);
+      CHECK_THROWS(istream2 >> t2);
+      CHECK_THROWS(istream3 >> t3);
+
    }
 }

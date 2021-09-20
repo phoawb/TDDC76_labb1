@@ -3,7 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
-
+#include <sstream>
 
 /*bool is_digits(std::string str)
 {
@@ -12,17 +12,20 @@
 
 int main()
 {   
-    Time t0{};
+    std::istringstream istream{"89 2 3"};
+    Time time{};
+    istream >> time;
+    std::cout << time << std::endl;
+    
+    
+    
+    
+    
+    
+    /*Time t0{};
     Time t1 = t0++ ++;
     std::cout << t0.get_second() << std::endl;
-    std::cout << t1.get_second() << std::endl;
-    
-    
-    
-    
-    
-    
-    
+    std::cout << t1.get_second() << std::endl;*/
     
     /*Time time{1,2,3};
     Time t0 = 3 + time;

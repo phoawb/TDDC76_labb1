@@ -1,6 +1,7 @@
 #ifndef TIME_CLASS
 #define TIME_CLASS
 #include <string>
+#include <iostream>
 
 class Time 
 {
@@ -20,6 +21,12 @@ public:
     Time operator ++ (int);
     Time& operator -- ();
     Time operator -- (int);
+    bool operator < (Time const & rhs); 
+    bool operator > (Time const & rhs);
+    bool operator <= (Time const & rhs);
+    bool operator >= (Time const & rhs);
+    bool operator == (Time const & rhs);
+    bool operator != (Time const & rhs);
 
 
 private:
@@ -28,10 +35,12 @@ private:
     int second{};
     void assignTime(int h, int m, int s);
     void checkIllegalString(std::string time) const; 
-    std::string formatString(int h, int m, int s) const; 
+    std::string formatString(int h) const; 
 };
 
 Time operator + (int lhs, Time const & rhs);
 Time operator - (int lhs, Time const & rhs);
+std::ostream& operator << (std::ostream& os, Time const & time);
+std::istream& operator >> (std::istream& is, Time & time);
 
 #endif
