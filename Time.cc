@@ -354,12 +354,8 @@ std::ostream& operator<<(std::ostream& os, Time const & time)
 }
 
 std::istream& operator>>(std::istream& is, Time & time) {
-int h{0};
-int m{0};
-int s{0};
 std::string time_str{};
-is >> h >> m >> s;
-time = Time{h,m,s};
+is >> time_str;
+time = Time{time_str};
 return is; 
 }
-    

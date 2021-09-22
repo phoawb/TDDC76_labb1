@@ -308,10 +308,10 @@ TEST_CASE("in- & utström")
 
    SECTION("inström")
    {
-      std::istringstream istream0{"1 2 3"};
-      std::istringstream istream1{"24 2 3"};
-      std::istringstream istream2{"1 60 3"};
-      std::istringstream istream3{"1 2 60"};
+      std::istringstream istream0{"01:02:03"};
+      std::istringstream istream1{"24:2:3"};
+      std::istringstream istream2{"1:60:3"};
+      std::istringstream istream3{"1:2:60"};
       Time t0{};
       Time t1{};
       Time t2{};
