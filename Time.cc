@@ -1,5 +1,5 @@
-#include "Time.h"
-#include "Time.h"
+#include "Time.h"  
+#include "Time.h"  
 #include <string>
 #include <iostream>
 #include <algorithm>
@@ -7,6 +7,31 @@
 #include <sstream>
 #include <iomanip>
 #include <stdexcept>
+
+/* -- --- --
+ * Komplettering: Ni har en stor mängd kodupprepning i er kod. 
+ * Detta gäller framförallt kod ni använder i era 
+ * operatoröverlagningsfunktioner (ex. operator+(...)).
+ * Flytta ut denna kod till en egen funktion för att undvika 
+ * onödig kodupprepning.
+ * 
+ * Komplettering: Ni dubbelinkluderar vissa headers. Tänk på att headers som 
+ * inkluderas i en headerfil som i sin tur inkluderas i er .cc-fil blir 
+ * att inkluderas automatiskt i .cc-filen. 
+ * Ex. inkluderas <string> både i .h och i .cc för time.
+ * 
+ * Komplettering: Variabler i konstruktorn MÅSTE initialiseras genom 
+ * konstruktorns datamedlemsinitieringslista (initializer list).
+ * Just nu initialiseras variablerna på ett icke-säkert sätt.
+ * Tips: Det är möjligt att initialisera en variabel till ett värde
+ * med en specifik variabeltyp för att sedan tilldela variabeln ett annat 
+ * värde i konstruktorns body.
+ * 
+ * Kommentar: Otroligt bra kod i övrigt - lättöverskådlig, lättförståelig,
+ * med i regel bra variabelnamngivning. Fokusera på att eliminera kodupprepning
+ * och fortsätt håll denna kvalité så kommer det gå strålande 
+ * fortsättningsvis för er. 
+ * -- --- -- */
 
 // Assigna 0 till alla tider i klassen
 Time::Time()
@@ -141,6 +166,8 @@ std::string Time::to_string (bool const twelve_format) const
     return time_str;
 }
 
+// Kommentar: Ni tar endast in en variabel h, och verkar plocka resterande
+// variabler från objektets privata variabler - är detta tanken?
 // Ta in tre integers (h, m, s) och returnera en sträng på hh:mm:ss format 
 std::string Time::formatString(int h) const
 {

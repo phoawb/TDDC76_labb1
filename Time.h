@@ -21,6 +21,9 @@ public:
     Time operator ++ (int);
     Time& operator -- ();
     Time operator -- (int);
+
+    /* Komplettering: const (korrekt) angivet i implementationsfil men ej i 
+     * headerfil för nedanstående medlemsfunktioner. */
     bool operator < (Time const & rhs); 
     bool operator > (Time const & rhs);
     bool operator <= (Time const & rhs);
@@ -33,6 +36,9 @@ private:
     int hour{};
     int minute{};
     int second{};
+
+    // Kommentar: Snyggt med privata medlemsfunktioner som endast
+    // syftar till intern användning för andra medlemsfunktioner.
     void assignTime(int h, int m, int s);
     void checkIllegalString(std::string time) const; 
     std::string formatString(int h) const; 
