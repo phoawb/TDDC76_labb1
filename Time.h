@@ -14,7 +14,6 @@ public:
     int get_hour() const;
     int get_minute() const;
     int get_second() const;
-    //Time operator + (Time & rhs);
     Time operator + (int const rhs);
     Time operator - (int rhs);
     Time& operator ++ ();
@@ -39,6 +38,7 @@ private:
 
     // Kommentar: Snyggt med privata medlemsfunktioner som endast
     // syftar till intern användning för andra medlemsfunktioner.
+    // Tack <3
     void assignTime(int h, int m, int s);
     void checkIllegalString(std::string time) const; 
     std::string formatString(int h) const; 
@@ -48,5 +48,6 @@ Time operator + (int lhs, Time const & rhs);
 Time operator - (int lhs, Time const & rhs);
 std::ostream& operator << (std::ostream& os, Time const & time);
 std::istream& operator >> (std::istream& is, Time & time);
+Time secondsToTime(int & total_time); // ska denna verkligen vara här? 
 
 #endif

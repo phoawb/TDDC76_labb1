@@ -1,12 +1,16 @@
 #include "Time.h"  
-#include "Time.h"  
-#include <string>
-#include <iostream>
 #include <algorithm>
 #include <cctype>
 #include <sstream>
 #include <iomanip>
 #include <stdexcept>
+
+/* KOMPLETTERING PATCH NOTES: 
+* Tog bort dubbelinkluderingar
+* Tog bort upprepad kod i operatorerna (?)
+* Implementerade säker initialisering av varibaler i alla konstruktorer
+
+*/
 
 /* -- --- --
  * Komplettering: Ni har en stor mängd kodupprepning i er kod. 
@@ -41,12 +45,14 @@ Time::Time()
 
 // Ta in tre integers och lägg till de till klassen om de är inom tillåtet spann för tid
 Time::Time(int h, int m, int s)
+: hour{0}, minute{0}, second{0}
 {
     Time::assignTime(h, m, s);
 }
 
 // Ta in en sträng och omvandla den till integers för klassen om den är på rätt format (hh:mm:ss)
 Time::Time(std::string time)
+: hour{0}, minute{0}, second{0}
 {   
     checkIllegalString(time);
     std::string str_hour = time.substr(0,2); //lägg tiderna i en egen string och omvandla de till integers
@@ -169,6 +175,8 @@ std::string Time::to_string (bool const twelve_format) const
 // Kommentar: Ni tar endast in en variabel h, och verkar plocka resterande
 // variabler från objektets privata variabler - är detta tanken?
 // Ta in tre integers (h, m, s) och returnera en sträng på hh:mm:ss format 
+// Det var så metoden var ursprungligen.
+// Men det kändes löjligt att skicka in minute och second när de ändå skulle vara tillgängliga här.
 std::string Time::formatString(int h) const
 {
     std::string time_string{};
@@ -184,99 +192,38 @@ std::string Time::formatString(int h) const
 
 // Addera med en integer på höger sida och returnera ett nytt tidsobjekt med adderade tider
 Time Time::operator+(int const rhs)
-{
-    int second2{0};
-    int minute2{0};
-    int hour2{0};
-
+{   
+    Time time2{};
     int total_time = hour*3600 + minute*60 + second + rhs; // Lägg allting till sekunder efter midnatt
-    if (total_time >= 0) // om positivt omvandla till respektive tid och kör relevant modulo
-    {
-        second2 = total_time % 60;
-        minute2 = (total_time/60) % 60;
-        hour2 = (total_time/3600) % 24;
-    } else // om negativt, gör först om till positiva sekunder efter midnatt
-    {
-        total_time = 86400 + (total_time % 86400);
-        second2 = total_time % 60;
-        minute2 = (total_time/60) % 60;
-        hour2 = (total_time/3600) % 24;
-    }
-
-    Time time2{hour2, minute2, second2};
+    time2 = secondsToTime(total_time);
+ 
     return time2;
 }
 
 // Addera med en integer på vänster sida och returnera ett nytt tidsobjekt med adderade tider
 Time operator+(int lhs, Time const & rhs)
 {
-    int second2{0};
-    int minute2{0};
-    int hour2{0};
-
+    Time time2{};
     int total_time = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second() + lhs; // Lägg allting till sekunder efter midnatt
-    if (total_time >= 0) // om positivt omvandla till respektive tid och kör relevant modulo
-    {
-        second2 = total_time % 60;
-        minute2 = (total_time/60) % 60;
-        hour2 = (total_time/3600) % 24;
-    } else // om negativt, gör först om till positiva sekunder efter midnatt
-    {
-        total_time = 86400 + (total_time % 86400);
-        second2 = total_time % 60;
-        minute2 = (total_time/60) % 60;
-        hour2 = (total_time/3600) % 24;
-    }
+    time2 = secondsToTime(total_time);
 
-    Time time2{hour2, minute2, second2};
     return time2;
 }
 
 Time Time::operator-(int rhs)
 {
-    int second2{0};
-    int minute2{0};
-    int hour2{0};
-
+    Time time2{};
     int total_time = hour*3600 + minute*60 + second - rhs; // Lägg allting till sekunder efter midnatt
-    if (total_time >= 0) // om positivt omvandla till respektive tid och kör relevant modulo
-    {
-        second2 = total_time % 60;
-        minute2 = (total_time/60) % 60;
-        hour2 = (total_time/3600) % 24;
-    } else // om negativt, gör först om till positiva sekunder efter midnatt
-    {
-        total_time = 86400 + (total_time % 86400);
-        second2 = total_time % 60;
-        minute2 = (total_time/60) % 60;
-        hour2 = (total_time/3600) % 24;
-    }
-
-    Time time2{hour2, minute2, second2};
+    time2 = secondsToTime(total_time);
+    
     return time2;
 }
 
-Time operator-(int lhs, Time const & rhs)
+Time operator-(int lhs, Time const & rhs) // vi tolkar int - obj som antal sekunder - varandra
 {
-    int second2{0};
-    int minute2{0};
-    int hour2{0};
-
+    Time time2{};
     int total_time = lhs - rhs.get_hour()*3600 - rhs.get_minute()*60 - rhs.get_second(); // Lägg allting till sekunder efter midnatt
-    if (total_time < 0) // om negativt, gör först om till positiva sekunder efter midnatt 
-    {
-        total_time = 86400 + (total_time % 86400);
-        second2 = total_time % 60;
-        minute2 = (total_time/60) % 60;
-        hour2 = (total_time/3600) % 24;
-    } else // om positivt omvandla till respektive tid och kör relevant modulo
-    {
-        second2 = total_time % 60;
-        minute2 = (total_time/60) % 60;
-        hour2 = (total_time/3600) % 24;
-    }
-
-    Time time2{hour2, minute2, second2};
+    time2 = secondsToTime(total_time);
     return time2;
 }
 
@@ -303,18 +250,7 @@ Time& Time::operator--()
 {   
     --second;
     int total_time = hour*3600 + minute*60 + second; // Lägg allting till sekunder efter midnatt
-    if (total_time >= 0) // om positivt omvandla till respektive tid och kör relevant modulo
-    {
-        second = total_time % 60;
-        minute = (total_time/60) % 60;
-        hour = (total_time/3600) % 24;
-    } else // om negativt, gör först om till positiva sekunder efter midnatt
-    {
-        total_time = 86400 + (total_time % 86400);
-        second = total_time % 60;
-        minute = (total_time/60) % 60;
-        hour = (total_time/3600) % 24;
-    }
+    *this = secondsToTime(total_time);
 
     return *this;
 }
@@ -385,4 +321,24 @@ std::string time_str{};
 is >> time_str;
 time = Time{time_str};
 return is; 
+}
+
+Time secondsToTime(int & total_time) 
+{
+    int second2{0};
+    int minute2{0};
+    int hour2{0};
+        
+    if (total_time <= 0) // om negativt, gör först om till positiva sekunder efter midnatt
+    {
+        total_time = 86400 + (total_time % 86400);
+    }
+
+    second2 = total_time % 60; // omvandla sekunderna tillbaka till rätt enheter
+    minute2 = (total_time/60) % 60;
+    hour2 = (total_time/3600) % 24;
+
+    Time time2{hour2, minute2, second2};
+
+    return time2;
 }
