@@ -7,9 +7,9 @@
 
 /* KOMPLETTERING PATCH NOTES: 
 * Tog bort dubbelinkluderingar
-* Tog bort upprepad kod i operatorerna (?)
+* Tog bort upprepad kod i operatorerna genom ny konstruktor och boolesk algebra
 * Implementerade säker initialisering av varibaler i alla konstruktorer
-
+* Fixade const för jämförelseoperatorerna 
 */
 
 /* -- --- --
@@ -62,6 +62,20 @@ Time::Time(std::string time)
     int m = std::stoi(str_minute);
     int s = std::stoi(str_second);
     assignTime(h, m, s);
+}
+
+// Ta in heltalet sekunder efter midnatt och lägg till i klassen genom omvandling
+Time::Time( int seconds_after_midnight)
+: hour{0}, minute{0}, second{0}
+{     
+    if (seconds_after_midnight <= 0) // om negativt, gör först om till positiva sekunder efter midnatt
+    {
+        seconds_after_midnight = 86400 + (seconds_after_midnight % 86400);
+    }
+    second = seconds_after_midnight % 60; // omvandla sekunderna till rätt enheter
+    minute = (seconds_after_midnight/60) % 60;
+    hour = (seconds_after_midnight/3600) % 24;
+
 }
 
 int Time::get_hour() const
@@ -191,39 +205,28 @@ std::string Time::formatString(int h) const
 }
 
 // Addera med en integer på höger sida och returnera ett nytt tidsobjekt med adderade tider
-Time Time::operator+(int const rhs)
+Time Time::operator+(int const & rhs) const
 {   
-    Time time2{};
     int total_time = hour*3600 + minute*60 + second + rhs; // Lägg allting till sekunder efter midnatt
-    time2 = secondsToTime(total_time);
- 
+    Time time2{total_time};
     return time2;
 }
 
 // Addera med en integer på vänster sida och returnera ett nytt tidsobjekt med adderade tider
 Time operator+(int lhs, Time const & rhs)
 {
-    Time time2{};
-    int total_time = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second() + lhs; // Lägg allting till sekunder efter midnatt
-    time2 = secondsToTime(total_time);
-
-    return time2;
+    return rhs + lhs;
 }
 
-Time Time::operator-(int rhs)
+Time Time::operator-(int const & rhs) const
 {
-    Time time2{};
-    int total_time = hour*3600 + minute*60 + second - rhs; // Lägg allting till sekunder efter midnatt
-    time2 = secondsToTime(total_time);
-    
-    return time2;
+    return *this + (-1)*rhs; 
 }
 
 Time operator-(int lhs, Time const & rhs) // vi tolkar int - obj som antal sekunder - varandra
 {
-    Time time2{};
     int total_time = lhs - rhs.get_hour()*3600 - rhs.get_minute()*60 - rhs.get_second(); // Lägg allting till sekunder efter midnatt
-    time2 = secondsToTime(total_time);
+    Time time2{total_time};
     return time2;
 }
 
@@ -241,7 +244,7 @@ Time& Time::operator++()
 
 Time Time::operator++(int)
 {
-    const Time old = *this;
+    const Time old{*this};
     ++(*this);
     return old;
 }
@@ -250,7 +253,7 @@ Time& Time::operator--()
 {   
     --second;
     int total_time = hour*3600 + minute*60 + second; // Lägg allting till sekunder efter midnatt
-    *this = secondsToTime(total_time);
+    *this = Time{total_time};
 
     return *this;
 }
@@ -262,39 +265,7 @@ Time Time::operator--(int)
     return old;
 }
 
-bool Time::operator<(Time const & rhs)
-{   
-    int time_lhs = hour*3600 + minute*60 + second;
-    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
-
-    return time_lhs < time_rhs;
-}
-
-bool Time::operator>(Time const & rhs)
-{
-    int time_lhs = hour*3600 + minute*60 + second;
-    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
-
-    return time_lhs > time_rhs;
-}
-
-bool Time::operator<=(Time const & rhs)
-{
-    int time_lhs = hour*3600 + minute*60 + second;
-    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
-
-    return time_lhs <= time_rhs;
-}
-
-bool Time::operator>=(Time const & rhs)
-{
-    int time_lhs = hour*3600 + minute*60 + second;
-    int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
-
-    return time_lhs >= time_rhs;
-}
-
-bool Time::operator==(Time const & rhs)
+bool Time::operator==(Time const & rhs) const
 {
     int time_lhs = hour*3600 + minute*60 + second;
     int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
@@ -302,12 +273,32 @@ bool Time::operator==(Time const & rhs)
     return time_lhs == time_rhs;
 }
 
-bool Time::operator!=(Time const & rhs)
-{
+bool Time::operator<(Time const & rhs) const 
+{   
     int time_lhs = hour*3600 + minute*60 + second;
     int time_rhs = rhs.get_hour()*3600 + rhs.get_minute()*60 + rhs.get_second();
 
-    return time_lhs != time_rhs;
+    return time_lhs < time_rhs;
+}
+
+bool Time::operator>(Time const & rhs) const
+{
+    return !(*this == rhs || *this < rhs) ;
+}
+
+bool Time::operator<=(Time const & rhs) const
+{
+    return (*this < rhs || *this == rhs);
+}
+
+bool Time::operator>=(Time const & rhs) const
+{
+    return (*this > rhs || *this == rhs);
+}
+
+bool Time::operator!=(Time const & rhs) const
+{
+    return !(*this == rhs);
 }
 
 std::ostream& operator<<(std::ostream& os, Time const & time)
@@ -323,22 +314,3 @@ time = Time{time_str};
 return is; 
 }
 
-Time secondsToTime(int & total_time) 
-{
-    int second2{0};
-    int minute2{0};
-    int hour2{0};
-        
-    if (total_time <= 0) // om negativt, gör först om till positiva sekunder efter midnatt
-    {
-        total_time = 86400 + (total_time % 86400);
-    }
-
-    second2 = total_time % 60; // omvandla sekunderna tillbaka till rätt enheter
-    minute2 = (total_time/60) % 60;
-    hour2 = (total_time/3600) % 24;
-
-    Time time2{hour2, minute2, second2};
-
-    return time2;
-}

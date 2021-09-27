@@ -293,9 +293,9 @@ TEST_CASE("comparison operators")
    }
 }
 
-TEST_CASE("in- & utström")
+TEST_CASE("in- & outstream")
 {
-   SECTION("utström")
+   SECTION("outstream")
    {
       Time t0{};
       std::stringstream ss{};
@@ -306,7 +306,7 @@ TEST_CASE("in- & utström")
       
    }
 
-   SECTION("inström")
+   SECTION("instream")
    {
       std::istringstream istream0{"01:02:03"};
       std::istringstream istream1{"24:2:3"};
@@ -323,4 +323,4 @@ TEST_CASE("in- & utström")
       CHECK_THROWS(istream3 >> t3);
 
    }
-}
+} 
